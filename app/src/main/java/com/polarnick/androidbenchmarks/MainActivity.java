@@ -2,7 +2,9 @@ package com.polarnick.androidbenchmarks;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.widget.TextView;
+import android.view.SurfaceView;
+
+import com.polarnick.androidbenchmarks.life.LifeSurfaceHolder;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -16,9 +18,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Example of a call to a native method
-        TextView tv = (TextView) findViewById(R.id.sample_text);
-        tv.setText(stringFromJNI());
+        LifeSurfaceHolder surfaceHolder = new LifeSurfaceHolder();
+
+        SurfaceView surface = (SurfaceView) findViewById(R.id.svMain);
+        surface.setWillNotDraw(false);
+        surface.getHolder().addCallback(surfaceHolder);
     }
 
     /**
