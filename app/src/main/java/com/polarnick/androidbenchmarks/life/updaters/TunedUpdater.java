@@ -6,7 +6,7 @@ import java.util.Random;
  * Polyarniy Nikolay, 03.12.16
  */
 
-public class SimpleUpdater implements Updater {
+public class TunedUpdater implements Updater {
 
     private int[][] state = null;
     private int[][] nextState = null;
@@ -16,7 +16,7 @@ public class SimpleUpdater implements Updater {
 
     @Override
     public String getName() {
-        return "Simple";
+        return "Tuned";
     }
 
     @Override
@@ -51,8 +51,34 @@ public class SimpleUpdater implements Updater {
     private static void update(int[][] cur, int[][] next, int width, int height, int n) {
         int dx[] = {-1, 0, 1, 1, 1, 0, -1, -1};
         int dy[] = {-1, -1, -1, 0, 1, 1, 1, 0};
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
+
+        // Tunes:
+        // 1. Remove branching (corner cases to separate loops)
+        // 2. Calculate next state once (not for every neighbour)
+        // 3. Break on first succeeding
+        for (int y = 1; y < height - 1; ++y) {
+            for (int x = 1; x < width - 1; ++x) {
+                boolean succeeded = false;
+
+                int toSucceed = (cur[y][x] + 1) % n;
+                for (int i = 0; i < dx.length; ++i) {
+                    if (cur[y + dy[i]][x + dx[i]] == toSucceed) {
+                        succeeded = true;
+                        break;
+                    }
+                }
+
+                if (succeeded) {
+                    next[y][x] = toSucceed;
+                } else {
+                    next[y][x] = cur[y][x];
+                }
+            }
+        }
+
+        // Corner cases
+        for (int y : new int[]{0, height - 1}) {
+            for (int x : new int[]{0, width - 1}) {
                 boolean succeeded = false;
 
                 for (int i = 0; i < dx.length; ++i) {

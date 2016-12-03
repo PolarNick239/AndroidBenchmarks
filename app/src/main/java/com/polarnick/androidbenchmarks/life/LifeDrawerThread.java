@@ -6,9 +6,12 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.SurfaceHolder;
 
+import com.polarnick.androidbenchmarks.life.updaters.TunedUpdater;
 import com.polarnick.androidbenchmarks.life.updaters.Updater;
 import com.polarnick.androidbenchmarks.life.updaters.SimpleUpdater;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 
 /**
@@ -20,7 +23,8 @@ public class LifeDrawerThread implements Runnable {
     private static final int DEFAULT_STATES_NUMBER = 15;
 
     private final SurfaceHolder surfaceHolder;
-    private final Updater updater;
+    private final List<Updater> updaters;
+    private volatile int curUpdater;
 
     private volatile boolean running = true;
 
@@ -38,7 +42,8 @@ public class LifeDrawerThread implements Runnable {
 
         this.n = n;
         this.colorsPalette = generateColors(n);
-        this.updater = new SimpleUpdater();
+        this.updaters = Arrays.asList(new SimpleUpdater(), new TunedUpdater());
+        this.curUpdater = 0;
     }
 
     private static int[] generateColors(int n) {
@@ -55,6 +60,7 @@ public class LifeDrawerThread implements Runnable {
     public void run() {
         while (running) {
             Canvas canvas = surfaceHolder.lockCanvas(null);
+            Updater updater = updaters.get(curUpdater);
 
             if (canvas == null) {
                 stop();
@@ -63,7 +69,9 @@ public class LifeDrawerThread implements Runnable {
 
             if (img == null || img.getWidth() != canvas.getWidth() || img.getHeight() != canvas.getHeight()) {
                 img = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
-                updater.setup(canvas.getWidth(), canvas.getHeight(), n);
+                for (Updater u : updaters) {
+                    u.setup(canvas.getWidth(), canvas.getHeight(), n);
+                }
             }
 
             long from = System.currentTimeMillis();
@@ -78,6 +86,7 @@ public class LifeDrawerThread implements Runnable {
 
             float megapixelsPerSec = canvas.getHeight() * canvas.getWidth() * 1000.0f / 1000_000.0f / passed;
             String message = passed + " ms, " + String.format(java.util.Locale.US, "%.2f", megapixelsPerSec) + " MP/s";
+            message += " - " + updater.getName();
             drawText(message, canvas);
 
             surfaceHolder.unlockCanvasAndPost(canvas);
@@ -105,6 +114,10 @@ public class LifeDrawerThread implements Runnable {
 
     public void stop() {
         running = false;
+    }
+
+    public void nextUpdater() {
+        curUpdater = (curUpdater + 1) % updaters.size();
     }
 
     private static int color(int r, int g, int b) {

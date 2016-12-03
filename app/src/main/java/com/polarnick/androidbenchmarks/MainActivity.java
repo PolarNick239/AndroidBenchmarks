@@ -23,6 +23,7 @@ public class MainActivity extends Activity {
         SurfaceView surface = (SurfaceView) findViewById(R.id.svMain);
         surface.setWillNotDraw(false);
         surface.getHolder().addCallback(surfaceHolder);
+        surface.setOnClickListener(surfaceHolder);
     }
 
     /**
