@@ -4,10 +4,30 @@ package com.polarnick.androidbenchmarks.life.updaters;
  * Polyarniy Nikolay, 03.12.16
  */
 
-public interface Updater {
+public abstract class Updater {
 
-    void setup(int width, int height, int n);
-    int[][] next();
-    String getName();
+    protected int n = 0;
+    protected int width = 0;
+    protected int height = 0;
+
+    public abstract String getName();
+
+    public abstract int[][] next();
+
+    public abstract void cleanup();
+
+    public void setup(int width, int height, int n) {
+        this.width = width;
+        this.height = height;
+        this.n = n;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public int getWidth() {
+        return width;
+    }
 
 }

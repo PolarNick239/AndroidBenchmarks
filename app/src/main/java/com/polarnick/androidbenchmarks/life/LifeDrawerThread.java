@@ -42,7 +42,7 @@ public class LifeDrawerThread implements Runnable {
 
         this.n = n;
         this.colorsPalette = generateColors(n);
-        this.updaters = Arrays.asList(new SimpleUpdater(), new TunedUpdater());
+        this.updaters = Arrays.asList(new TunedUpdater(), new SimpleUpdater());
         this.curUpdater = 0;
     }
 
@@ -69,9 +69,12 @@ public class LifeDrawerThread implements Runnable {
 
             if (img == null || img.getWidth() != canvas.getWidth() || img.getHeight() != canvas.getHeight()) {
                 img = Bitmap.createBitmap(canvas.getWidth(), canvas.getHeight(), Bitmap.Config.ARGB_8888);
+            }
+            if (img.getWidth() != updater.getWidth() || img.getHeight() != updater.getHeight()) {
                 for (Updater u : updaters) {
-                    u.setup(canvas.getWidth(), canvas.getHeight(), n);
+                    u.cleanup();
                 }
+                updater.setup(img.getWidth(), img.getHeight(), n);
             }
 
             long from = System.currentTimeMillis();
@@ -131,7 +134,8 @@ public class LifeDrawerThread implements Runnable {
     private void draw(int[][] states, int[] colorsPalette, Bitmap img) {
         for (int y = 0; y < img.getHeight(); ++y) {
             for (int x = 0; x < img.getWidth(); ++x) {
-                img.setPixel(x, y, colorsPalette[states[y][x]]);
+                int state = states[y][x];
+                img.setPixel(x, y, colorsPalette[state]);
             }
         }
     }

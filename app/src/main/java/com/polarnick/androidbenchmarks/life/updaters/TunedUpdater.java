@@ -6,13 +6,10 @@ import java.util.Random;
  * Polyarniy Nikolay, 03.12.16
  */
 
-public class TunedUpdater implements Updater {
+public class TunedUpdater extends Updater {
 
     private int[][] state = null;
     private int[][] nextState = null;
-    private int n;
-    private int width;
-    private int height;
 
     @Override
     public String getName() {
@@ -21,9 +18,7 @@ public class TunedUpdater implements Updater {
 
     @Override
     public void setup(int width, int height, int n) {
-        this.width = width;
-        this.height = height;
-        this.n = n;
+        super.setup(width, height, n);
         this.state = new int[height][width];
         this.nextState = new int[height][width];
 
@@ -33,6 +28,15 @@ public class TunedUpdater implements Updater {
                 state[y][x] = r.nextInt(n);
             }
         }
+    }
+
+    @Override
+    public void cleanup() {
+        this.width = 0;
+        this.height = 0;
+        this.n = 0;
+        this.state = null;
+        this.nextState = null;
     }
 
     @Override
