@@ -1,12 +1,12 @@
 package com.polarnick.androidbenchmarks;
 
-import android.support.v7.app.AppCompatActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.SurfaceView;
 
 import com.polarnick.androidbenchmarks.life.LifeSurfaceHolder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     // Used to load the 'native-lib' library on application startup.
     static {
