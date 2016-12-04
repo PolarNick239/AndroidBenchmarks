@@ -1,6 +1,7 @@
 package com.polarnick.androidbenchmarks.life.updaters;
 
 import java.util.Random;
+import java.util.concurrent.CountDownLatch;
 
 /**
  * Polyarniy Nikolay, 03.12.16
@@ -13,7 +14,7 @@ public class TunedUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Tuned";
+        return "Simple (" + nthreads + " threads)";
     }
 
     @Override
@@ -40,8 +41,8 @@ public class TunedUpdater extends Updater {
     }
 
     @Override
-    public int[][] next() {
-        update(state, nextState, width, height, n);
+    public int[][] next() throws InterruptedException {
+        update();
         swapBuffers();
         return state;
     }
@@ -52,7 +53,25 @@ public class TunedUpdater extends Updater {
         nextState = tmp;
     }
 
-    private static void update(int[][] cur, int[][] next, int width, int height, int n) {
+    private void update() throws InterruptedException {
+        final CountDownLatch latch = new CountDownLatch(nthreads);
+        for (int i = 0; i < nthreads; ++i) {
+            final int row0 = (height * i) / nthreads;
+            final int row1 = (height * (i + 1)) / nthreads;
+            executors.execute(new Runnable() {
+                @Override
+                public void run() {
+                    update(state, nextState, width, height, n,
+                            row0, row1, 0, width);
+                    latch.countDown();
+                }
+            });
+        }
+        latch.await();
+    }
+
+    private static void update(int[][] cur, int[][] next, int width, int height, int n,
+                               int row0, int row1, int col0, int col1) {
         int dx[] = {-1, 0, 1, 1, 1, 0, -1, -1};
         int dy[] = {-1, -1, -1, 0, 1, 1, 1, 0};
 
@@ -60,8 +79,8 @@ public class TunedUpdater extends Updater {
         // 1. Remove branching (corner cases to separate loops)
         // 2. Calculate next state once (not for every neighbour)
         // 3. Break on first succeeding
-        for (int y = 1; y < height - 1; ++y) {
-            for (int x = 1; x < width - 1; ++x) {
+        for (int y = Math.max(1, row0); y < Math.min(height - 1, row1); ++y) {
+            for (int x = Math.max(1, col0); x < Math.min(width - 1, col1); ++x) {
                 boolean succeeded = false;
 
                 int toSucceed = (cur[y][x] + 1) % n;

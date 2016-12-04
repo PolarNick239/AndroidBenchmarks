@@ -79,7 +79,13 @@ public class LifeDrawerThread implements Runnable {
 
             long from = System.currentTimeMillis();
 
-            int[][] state = updater.next();
+            int[][] state;
+            try {
+                state = updater.next();
+            } catch (InterruptedException e) {
+                stop();
+                break;
+            }
             draw(state, colorsPalette, img);
 
             long to = System.currentTimeMillis();
