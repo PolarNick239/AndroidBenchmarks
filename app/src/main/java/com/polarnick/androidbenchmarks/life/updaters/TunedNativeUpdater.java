@@ -7,14 +7,14 @@ import java.util.concurrent.CountDownLatch;
  * Polyarniy Nikolay, 04.12.16
  */
 
-public class NativeUpdater extends Updater {
+public class TunedNativeUpdater extends Updater {
 
     private int[] state = null;
     private int[] nextState = null;
 
     @Override
     public String getName() {
-        return "Native (" + nthreads + " threads)";
+        return "Tuned Native (" + nthreads + " threads)";
     }
 
     @Override
@@ -61,7 +61,7 @@ public class NativeUpdater extends Updater {
             executors.execute(new Runnable() {
                 @Override
                 public void run() {
-                    updatePart(state, nextState, width, height, n,
+                    updatePartTuned(state, nextState, width, height, n,
                             row0, row1, 0, width);
                     latch.countDown();
                 }
@@ -70,7 +70,7 @@ public class NativeUpdater extends Updater {
         latch.await();
     }
 
-    public native void updatePart(int[] cur, int[] next, int width, int height, int n,
-                                  int row0, int row1, int col0, int col1);
+    public native void updatePartTuned(int[] cur, int[] next, int width, int height, int n,
+                                       int row0, int row1, int col0, int col1);
 
 }

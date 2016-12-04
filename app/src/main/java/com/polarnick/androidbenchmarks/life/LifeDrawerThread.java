@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.view.SurfaceHolder;
 
 import com.polarnick.androidbenchmarks.life.updaters.NativeUpdater;
+import com.polarnick.androidbenchmarks.life.updaters.TunedNativeUpdater;
 import com.polarnick.androidbenchmarks.life.updaters.TunedUpdater;
 import com.polarnick.androidbenchmarks.life.updaters.Updater;
 import com.polarnick.androidbenchmarks.life.updaters.SimpleUpdater;
@@ -43,7 +44,7 @@ public class LifeDrawerThread implements Runnable {
 
         this.n = n;
         this.colorsPalette = generateColors(n);
-        this.updaters = Arrays.asList(new NativeUpdater(), new TunedUpdater(), new SimpleUpdater());
+        this.updaters = Arrays.asList(new TunedNativeUpdater(), new NativeUpdater(), new TunedUpdater(), new SimpleUpdater());
         this.curUpdater = 0;
     }
 
@@ -79,7 +80,6 @@ public class LifeDrawerThread implements Runnable {
             }
 
             long from = System.currentTimeMillis();
-
             int[] state;
             try {
                 state = updater.next();
@@ -87,10 +87,10 @@ public class LifeDrawerThread implements Runnable {
                 stop();
                 break;
             }
-            draw(state, colorsPalette, img);
-
             long to = System.currentTimeMillis();
             long passed = Math.max(1, to - from);
+
+            draw(state, colorsPalette, img);
 
             canvas.drawBitmap(img, 0f, 0f, null);
 

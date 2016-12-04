@@ -14,7 +14,7 @@ public class TunedUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Simple (" + nthreads + " threads)";
+        return "Tuned (" + nthreads + " threads)";
     }
 
     @Override
