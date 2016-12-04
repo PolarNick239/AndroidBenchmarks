@@ -14,7 +14,7 @@ public class SimpleUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Simple (" + nthreads + " threads)";
+        return "Simple (" + Runtime.getRuntime().availableProcessors() + " cores)";
     }
 
     @Override

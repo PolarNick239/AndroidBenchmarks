@@ -14,7 +14,7 @@ public class TunedNativeUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Tuned Native (" + nthreads + " threads)";
+        return "Tuned Native (" + Runtime.getRuntime().availableProcessors() + " cores)";
     }
 
     @Override

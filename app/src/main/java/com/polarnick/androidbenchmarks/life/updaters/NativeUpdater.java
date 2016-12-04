@@ -14,7 +14,7 @@ public class NativeUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Native (" + nthreads + " threads)";
+        return "Native (" + Runtime.getRuntime().availableProcessors() + " cores)";
     }
 
     @Override
