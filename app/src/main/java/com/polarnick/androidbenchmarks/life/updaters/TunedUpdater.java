@@ -9,8 +9,8 @@ import java.util.concurrent.CountDownLatch;
 
 public class TunedUpdater extends Updater {
 
-    private int[][] state = null;
-    private int[][] nextState = null;
+    private int[] state = null;
+    private int[] nextState = null;
 
     @Override
     public String getName() {
@@ -20,13 +20,13 @@ public class TunedUpdater extends Updater {
     @Override
     public void setup(int width, int height, int n) {
         super.setup(width, height, n);
-        this.state = new int[height][width];
-        this.nextState = new int[height][width];
+        this.state = new int[height * width];
+        this.nextState = new int[height * width];
 
         Random r = new Random(239);
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) {
-                state[y][x] = r.nextInt(n);
+                state[width * y + x] = r.nextInt(n);
             }
         }
     }
@@ -41,14 +41,14 @@ public class TunedUpdater extends Updater {
     }
 
     @Override
-    public int[][] next() throws InterruptedException {
+    public int[] next() throws InterruptedException {
         update();
         swapBuffers();
         return state;
     }
 
     private void swapBuffers() {
-        int[][] tmp = state;
+        int[] tmp = state;
         state = nextState;
         nextState = tmp;
     }
@@ -70,7 +70,7 @@ public class TunedUpdater extends Updater {
         latch.await();
     }
 
-    private static void update(int[][] cur, int[][] next, int width, int height, int n,
+    private static void update(int[] cur, int[] next, int width, int height, int n,
                                int row0, int row1, int col0, int col1) {
         int dx[] = {-1, 0, 1, 1, 1, 0, -1, -1};
         int dy[] = {-1, -1, -1, 0, 1, 1, 1, 0};
@@ -83,18 +83,18 @@ public class TunedUpdater extends Updater {
             for (int x = Math.max(1, col0); x < Math.min(width - 1, col1); ++x) {
                 boolean succeeded = false;
 
-                int toSucceed = (cur[y][x] + 1) % n;
+                int toSucceed = (cur[width * y + x] + 1) % n;
                 for (int i = 0; i < dx.length; ++i) {
-                    if (cur[y + dy[i]][x + dx[i]] == toSucceed) {
+                    if (cur[width * (y + dy[i]) + x + dx[i]] == toSucceed) {
                         succeeded = true;
                         break;
                     }
                 }
 
                 if (succeeded) {
-                    next[y][x] = toSucceed;
+                    next[width * y + x] = toSucceed;
                 } else {
-                    next[y][x] = cur[y][x];
+                    next[width * y + x] = cur[width * y + x];
                 }
             }
         }
@@ -108,15 +108,15 @@ public class TunedUpdater extends Updater {
                     if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
                         continue;
                     }
-                    if (cur[y + dy[i]][x + dx[i]] == (cur[y][x] + 1) % n) {
+                    if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
                         succeeded = true;
                     }
                 }
 
                 if (succeeded) {
-                    next[y][x] = (cur[y][x] + 1) % n;
+                    next[width * y + x] = (cur[width * y + x] + 1) % n;
                 } else {
-                    next[y][x] = cur[y][x];
+                    next[width * y + x] = cur[width * y + x];
                 }
             }
         }

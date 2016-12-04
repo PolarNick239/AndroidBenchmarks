@@ -4,17 +4,22 @@ import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
 /**
- * Polyarniy Nikolay, 03.12.16
+ * Polyarniy Nikolay, 04.12.16
  */
 
-public class SimpleUpdater extends Updater {
+public class NativeUpdater extends Updater {
+
+    // Used to load the 'native-lib' library on application startup.
+    static {
+        System.loadLibrary("native-lib");
+    }
 
     private int[] state = null;
     private int[] nextState = null;
 
     @Override
     public String getName() {
-        return "Simple (" + nthreads + " threads)";
+        return "Native (" + nthreads + " threads)";
     }
 
     @Override
@@ -61,7 +66,7 @@ public class SimpleUpdater extends Updater {
             executors.execute(new Runnable() {
                 @Override
                 public void run() {
-                    update(state, nextState, width, height, n,
+                    updatePart(state, nextState, width, height, n,
                             row0, row1, 0, width);
                     latch.countDown();
                 }
@@ -70,30 +75,7 @@ public class SimpleUpdater extends Updater {
         latch.await();
     }
 
-    private static void update(int[] cur, int[] next, int width, int height, int n,
-                               int row0, int row1, int col0, int col1) {
-        int dx[] = {-1, 0, 1, 1, 1, 0, -1, -1};
-        int dy[] = {-1, -1, -1, 0, 1, 1, 1, 0};
-        for (int y = row0; y < row1; ++y) {
-            for (int x = col0; x < col1; ++x) {
-                boolean succeeded = false;
-
-                for (int i = 0; i < dx.length; ++i) {
-                    if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
-                        continue;
-                    }
-                    if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
-                        succeeded = true;
-                    }
-                }
-
-                if (succeeded) {
-                    next[width * y + x] = (cur[width * y + x] + 1) % n;
-                } else {
-                    next[width * y + x] = cur[width * y + x];
-                }
-            }
-        }
-    }
+    public native void updatePart(int[] cur, int[] next, int width, int height, int n,
+                                  int row0, int row1, int col0, int col1);
 
 }

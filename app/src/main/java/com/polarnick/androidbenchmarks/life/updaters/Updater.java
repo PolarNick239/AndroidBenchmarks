@@ -20,7 +20,7 @@ public abstract class Updater {
 
     public abstract String getName();
 
-    public abstract int[][] next() throws InterruptedException;
+    public abstract int[] next() throws InterruptedException;
 
     public abstract void cleanup();
 
