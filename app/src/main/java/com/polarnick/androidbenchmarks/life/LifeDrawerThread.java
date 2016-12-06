@@ -51,6 +51,7 @@ public class LifeDrawerThread implements Runnable {
         Random r = new Random(239);
         for (int i = 0; i < n; ++i) {
             // TODO* генерировать симпатичную палитру :)
+            // Например тут можно подглядеть: http://stackoverflow.com/questions/43044/algorithm-to-randomly-generate-an-aesthetically-pleasing-color-palette
             colors[i] = color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
         }
         return colors;
