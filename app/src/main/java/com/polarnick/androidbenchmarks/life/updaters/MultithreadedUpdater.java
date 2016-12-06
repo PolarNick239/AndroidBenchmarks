@@ -15,7 +15,7 @@ public class MultithreadedUpdater extends Updater {
     private int[] nextState = null;
 
     static final int nthreads = Runtime.getRuntime().availableProcessors() + 1; // узнаем число доступных ядер процессоров
-    static final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1); // создаем потоки для вычислений
+    static final ExecutorService executors = Executors.newFixedThreadPool(nthreads); // создаем потоки для вычислений
 
     @Override
     public String getName() {
@@ -29,12 +29,7 @@ public class MultithreadedUpdater extends Updater {
         this.state = new int[height * width];
         this.nextState = new int[height * width];
 
-        Random r = new Random(239);
-        for (int y = 0; y < height; ++y) {
-            for (int x = 0; x < width; ++x) {
-                state[y * width + x] = r.nextInt(n);
-            }
-        }
+        // 2.0 TODO заполнить this.state случайными числами (как и в SimpleUpdater)
     }
 
     @Override
@@ -60,26 +55,12 @@ public class MultithreadedUpdater extends Updater {
     }
 
     private void update() {
-        int nthreads = Runtime.getRuntime().availableProcessors() + 1;
-        final CountDownLatch latch = new CountDownLatch(nthreads); // счетчик выполненной работы
+        // 2.2 TODO заменить однопоточные вычисления многопоточными - считая в каждом потоке ровно его часть работы
+        // полезные классы: ExecutorService (см this.executors) и CountDownLatch
 
-        for (int ithread = 0; ithread < nthreads; ++ithread) {
-            executors.execute(new Runnable() {
-                @Override
-                public void run() {
+        // ...
 
-                    throw new UnsupportedOperationException();
-
-                    // 2.2 TODO заменить однопоточные вычисления многопоточными - считая в каждом потоке ровно его часть работы
-                    // update(state, nextState, width, height, n, ...);
-
-                    // latch.countDown(); // уменьшаем счетчик - т.е. этот поток уже свою работу посчитал
-                }
-            });
-        }
-
-        // теперь нужно дождаться выполнения всех частей работы:
-        // latch.await(); // 2.3 TODO прокинуть ошибку вверх
+        // теперь нужно как-то дождаться выполнения всех частей работы во всех использованных потоках, возможно поможет CountDownLatch?
     }
 
     private static void update(int[] cur, int[] next, int width, int height, int n) {
