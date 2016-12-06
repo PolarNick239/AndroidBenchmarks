@@ -50,6 +50,7 @@ public class LifeDrawerThread implements Runnable {
 
         Random r = new Random(239);
         for (int i = 0; i < n; ++i) {
+            // TODO* генерировать симпатичную палитру :)
             colors[i] = color(r.nextInt(256), r.nextInt(256), r.nextInt(256));
         }
         return colors;
@@ -76,10 +77,8 @@ public class LifeDrawerThread implements Runnable {
                 updater.setup(img.getWidth(), img.getHeight(), n);
             }
 
-            long from = System.currentTimeMillis();
-            int[] state = updater.next();
-            long to = System.currentTimeMillis();
-            long passed = Math.max(1, to - from);
+            int[] state = updater.next(); // 1.3 TODO сохранить время вычисления функции updater.next() в переменную passed (System.currentTimeMillis())
+            long passed = ...;
 
             draw(state, colorsPalette, img);
 
@@ -118,7 +117,8 @@ public class LifeDrawerThread implements Runnable {
     }
 
     public void nextUpdater() {
-        curUpdater = (curUpdater + 1) % updaters.size();
+        // 2.4 TODO сделать так, чтобы начал использоваться другой метод вычисления + надо как-то добавить в перечень алгоритмов - MultithreadedUpdater
+        // curUpdater = ...;
     }
 
     private static int color(int r, int g, int b) {

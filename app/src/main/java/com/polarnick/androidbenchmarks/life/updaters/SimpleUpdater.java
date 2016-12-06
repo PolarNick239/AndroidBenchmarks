@@ -66,19 +66,16 @@ public class SimpleUpdater extends Updater {
                 boolean succeeded = false;
 
                 for (int i = 0; i < dx.length; ++i) {
-                    if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
-                        continue;
-                    }
-                    if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
+                    int neighbourX = x + dx[i];
+                    int neighbourY = y + dy[i];
+
+                    if (...) { // 1.1 TODO проверить 'поглощает' ли сосед текущую клетку?
                         succeeded = true;
                     }
                 }
 
-                if (succeeded) {
-                    next[width * y + x] = (cur[width * y + x] + 1) % n;
-                } else {
-                    next[width * y + x] = cur[width * y + x];
-                }
+                // 1.2 TODO посчитать состояние текущей клетки в следующий момент времени
+                next[width * y + x] = ...;
             }
         }
     }
