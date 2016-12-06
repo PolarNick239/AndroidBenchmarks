@@ -15,7 +15,7 @@ public class MultithreadedUpdater extends Updater {
     private int[] nextState = null;
 
     static final int nthreads = Runtime.getRuntime().availableProcessors() + 1; // узнаем число доступных ядер процессоров
-    static final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1); // создаем потоки для вычислений
+    static final ExecutorService executors = Executors.newFixedThreadPool(nthreads); // создаем потоки для вычислений
 
     @Override
     public String getName() {
@@ -60,7 +60,6 @@ public class MultithreadedUpdater extends Updater {
     }
 
     private void update() {
-        int nthreads = Runtime.getRuntime().availableProcessors() + 1;
         final CountDownLatch latch = new CountDownLatch(nthreads); // счетчик выполненной работы
 
         for (int ithread = 0; ithread < nthreads; ++ithread) {
