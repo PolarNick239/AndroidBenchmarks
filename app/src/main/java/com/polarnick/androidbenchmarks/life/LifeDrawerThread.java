@@ -131,6 +131,13 @@ public class LifeDrawerThread implements Runnable {
         return (a << 24) | (r << 16) | (g << 8) | b;
     }
 
-    private native void draw(int[] states, int[] colorsPalette, Bitmap img);
+    private void draw(int[] states, int[] colorsPalette, Bitmap img) {
+        for (int y = 0; y < img.getHeight(); ++y) {
+            for (int x = 0; x < img.getWidth(); ++x) {
+                img.setPixel(x, y, colorsPalette[states[img.getWidth() * y + x]]);
+            }
+        }
+    }// NIGHTMARE TODO удалить draw(...) сверху (он нещадно тормозит, доп. вопрос - почему?), и раскомментировать нативный вариант (а так же реализовать этот метод в native-lib.cpp):
+    // private native void draw(int[] states, int[] colorsPalette, Bitmap img);
 
 }

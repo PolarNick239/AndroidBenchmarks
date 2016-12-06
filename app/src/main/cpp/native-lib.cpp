@@ -8,20 +8,15 @@ Java_com_polarnick_androidbenchmarks_life_LifeDrawerThread_draw(JNIEnv *env, job
                                                                 jintArray statesJ,
                                                                 jintArray colorsPaletteJ,
                                                                 jobject img) {
-    jint* states = env->GetIntArrayElements(statesJ, JNI_FALSE);
-    jint* colorsPalette = env->GetIntArrayElements(colorsPaletteJ, JNI_FALSE);
+    // NIGHMARE TODO Заполнить BitMap цветами, которые сопоставлены номерам состояний:
+    // img[i] = colorsPalette[states[i]];
 
-    jint* pixels;
-    AndroidBitmapInfo imgInfo ;
+    // Ориентировочные слова для гугла: android bitmap jni access
 
-    AndroidBitmap_lockPixels(env, img, (void **) &pixels);
-    AndroidBitmap_getInfo(env, img, &imgInfo);
-
-    for (int i = 0; i < imgInfo.width * imgInfo.height; ++i) {
-        pixels[i] = colorsPalette[states[i]];
-    }
-
-    AndroidBitmap_unlockPixels(env, img);
-    env->ReleaseIntArrayElements(statesJ, states, 0);
-    env->ReleaseIntArrayElements(colorsPaletteJ, colorsPalette, 0);
+    // Анек:
+    //
+    // Созвал царь американца, немца и русского и говорит:
+    // — Кто море грязи на своей машине переедет, тому дочку в жёны и полцарства в придачу.
+    // Американец на феррари до середины доехал — утонул. Немец на БМВ 2/3 проехал — утонул. А русский говорит:
+    // — Почему ты вообще нами командуешь? Ты какой страны царь? Как получилось, что американец и немец одновременно должны тебя слушать? А что твой народ скажет, если ты полцарства отдашь человеку, который просто проедет по грязи на машине? Жесть, ты вообще как царём стал?
 }
