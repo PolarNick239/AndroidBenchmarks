@@ -14,12 +14,13 @@ public class SimpleUpdater extends Updater {
 
     @Override
     public String getName() {
-        return "Simple (" + Runtime.getRuntime().availableProcessors() + " cores)";
+        return "Simple";
     }
 
     @Override
     public void setup(int width, int height, int n) {
         super.setup(width, height, n);
+
         this.state = new int[height * width];
         this.nextState = new int[height * width];
 
@@ -41,7 +42,7 @@ public class SimpleUpdater extends Updater {
     }
 
     @Override
-    public int[] next() throws InterruptedException {
+    public int[] next() {
         update();
         swapBuffers();
         return state;
@@ -53,29 +54,15 @@ public class SimpleUpdater extends Updater {
         nextState = tmp;
     }
 
-    private void update() throws InterruptedException {
-        final CountDownLatch latch = new CountDownLatch(nthreads);
-        for (int i = 0; i < nthreads; ++i) {
-            final int row0 = (height * i) / nthreads;
-            final int row1 = (height * (i + 1)) / nthreads;
-            executors.execute(new Runnable() {
-                @Override
-                public void run() {
-                    update(state, nextState, width, height, n,
-                            row0, row1, 0, width);
-                    latch.countDown();
-                }
-            });
-        }
-        latch.await();
+    private void update() {
+        update(state, nextState, width, height, n);
     }
 
-    private static void update(int[] cur, int[] next, int width, int height, int n,
-                               int row0, int row1, int col0, int col1) {
+    private static void update(int[] cur, int[] next, int width, int height, int n) {
         int dx[] = {-1, 0, 1, 1, 1, 0, -1, -1};
         int dy[] = {-1, -1, -1, 0, 1, 1, 1, 0};
-        for (int y = row0; y < row1; ++y) {
-            for (int x = col0; x < col1; ++x) {
+        for (int y = 0; y < height; ++y) {
+            for (int x = 0; x < width; ++x) {
                 boolean succeeded = false;
 
                 for (int i = 0; i < dx.length; ++i) {

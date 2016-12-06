@@ -15,12 +15,9 @@ public abstract class Updater {
     protected int width = 0;
     protected int height = 0;
 
-    static final int nthreads = 5 * Runtime.getRuntime().availableProcessors();
-    static final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
-
     public abstract String getName();
 
-    public abstract int[] next() throws InterruptedException;
+    public abstract int[] next();
 
     public abstract void cleanup();
 
