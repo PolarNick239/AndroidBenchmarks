@@ -24,7 +24,7 @@ public class SimpleUpdater extends Updater {
         this.state = new int[height * width];
         this.nextState = new int[height * width];
 
-        // 1.0 TODO заполнить this.state случайными числами - класс Random (ВНЕЗАПНО)
+        // 1.0 TODO заполнить this.state случайными числами - поможет класс Random
     }
 
     @Override
