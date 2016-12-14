@@ -80,7 +80,13 @@ public class LifeDrawerThread implements Runnable {
             }
 
             // 1.2 TODO замерять время вычисления функции updater.next() (System.currentTimeMillis())
-            int[] state = updater.next();
+            int[] state;
+            try {
+                state = updater.next();
+            } catch (InterruptedException e) {
+                stop();
+                break;
+            }
             long passed = ...;
 
             draw(state, colorsPalette, img);
@@ -88,6 +94,7 @@ public class LifeDrawerThread implements Runnable {
             canvas.drawBitmap(img, 0f, 0f, null);
 
             // 1.3 TODO выводить сообщение с временем вычисления updater.next() + количество обрабатываемых клеток в секунду (в миллионах в секунду)
+            // Чтобы понять, как число превратить в строку рекомендую призвать на помощь могучий интернет мантрой навроде "java как int в string"
             String message = ...;
             message += " - " + updater.getName();
             drawText(message, canvas);

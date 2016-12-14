@@ -42,7 +42,7 @@ public class MultithreadedUpdater extends Updater {
     }
 
     @Override
-    public int[] next() {
+    public int[] next() throws InterruptedException {
         update();
         swapBuffers();
         return state;
@@ -54,13 +54,14 @@ public class MultithreadedUpdater extends Updater {
         nextState = tmp;
     }
 
-    private void update() {
+    private void update() throws InterruptedException {
         // 2.2 TODO заменить однопоточные вычисления многопоточными - считая в каждом потоке ровно его часть работы
-        // полезные классы: ExecutorService (см this.executors) и CountDownLatch
+        // полезные классы: ExecutorService (см this.executors), CountDownLatch(int count) и его метод CountDownLatch.countDown(), который уменьшает значение счетчика работ которые еще не досчитались
+        CountDownLatch workToExecute = new CountDownLatch(-1 /*подставить сюда вместо -1: число задач для вычисления которые мы собираемся ожидать*/);
 
         // ...
 
-        // теперь нужно как-то дождаться выполнения всех частей работы во всех использованных потоках, возможно поможет CountDownLatch?
+        workToExecute.await(); // теперь нужно как-то дождаться выполнения всех частей работы во всех использованных потоках, возможно поможет счетчик работ CountDownLatch и его метод CountDownLatch.await()? Который дожидается, пока счетчик работы не дойдет до нуля
     }
 
     private static void update(int[] cur, int[] next, int width, int height, int n) {
