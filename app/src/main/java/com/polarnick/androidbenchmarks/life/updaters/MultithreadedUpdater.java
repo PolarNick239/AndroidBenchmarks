@@ -47,7 +47,7 @@ public class MultithreadedUpdater extends Updater {
     }
 
     @Override
-    public int[] next() {
+    public int[] next() throws InterruptedException {
         update();
         swapBuffers();
         return state;
@@ -59,7 +59,7 @@ public class MultithreadedUpdater extends Updater {
         nextState = tmp;
     }
 
-    private void update() {
+    private void update() throws InterruptedException {
         final CountDownLatch latch = new CountDownLatch(nthreads); // счетчик выполненной работы
 
         for (int ithread = 0; ithread < nthreads; ++ithread) {
@@ -78,7 +78,7 @@ public class MultithreadedUpdater extends Updater {
         }
 
         // теперь нужно дождаться выполнения всех частей работы:
-        // latch.await(); // 2.3 TODO прокинуть ошибку вверх
+        // latch.await(); // 2.3 TODO раскомментировать и осознать зачем это нужно, и что происходит если это не делать
     }
 
     private static void update(int[] cur, int[] next, int width, int height, int n) {

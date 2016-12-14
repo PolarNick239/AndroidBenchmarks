@@ -78,7 +78,13 @@ public class LifeDrawerThread implements Runnable {
                 updater.setup(img.getWidth(), img.getHeight(), n);
             }
 
-            int[] state = updater.next(); // 1.3 TODO сохранить время вычисления функции updater.next() в переменную passed (System.currentTimeMillis())
+            int[] state; // 1.3 TODO сохранить время вычисления функции updater.next() в переменную passed (System.currentTimeMillis())
+            try {
+                state = updater.next();
+            } catch (InterruptedException e) {
+                stop();
+                break;
+            }
             long passed = ...;
 
             draw(state, colorsPalette, img);
