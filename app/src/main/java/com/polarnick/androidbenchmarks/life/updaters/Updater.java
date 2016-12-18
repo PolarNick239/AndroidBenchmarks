@@ -27,6 +27,8 @@ public abstract class Updater {
         this.n = n;
     }
 
+    public abstract void setState(int[] state);
+
     public int getHeight() {
         return height;
     }

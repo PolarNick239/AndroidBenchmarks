@@ -33,6 +33,11 @@ public class SimpleUpdater extends Updater {
     }
 
     @Override
+    public void setState(int[] state) {
+        System.arraycopy(state, 0, this.state, 0, state.length);
+    }
+
+    @Override
     public void cleanup() {
         this.width = 0;
         this.height = 0;
