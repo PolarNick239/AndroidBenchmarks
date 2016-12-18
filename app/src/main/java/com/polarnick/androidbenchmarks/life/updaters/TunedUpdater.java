@@ -32,6 +32,11 @@ public class TunedUpdater extends Updater {
     }
 
     @Override
+    public void setState(int[] state) {
+        System.arraycopy(state, 0, this.state, 0, state.length);
+    }
+
+    @Override
     public void cleanup() {
         this.width = 0;
         this.height = 0;
@@ -101,7 +106,28 @@ public class TunedUpdater extends Updater {
 
         // Corner cases
         for (int y : new int[]{0, height - 1}) {
-            for (int x : new int[]{0, width - 1}) {
+            for (int x = 0; x < width; ++x) {
+                boolean succeeded = false;
+
+                for (int i = 0; i < dx.length; ++i) {
+                    if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
+                        continue;
+                    }
+                    if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
+                        succeeded = true;
+                    }
+                }
+
+                if (succeeded) {
+                    next[width * y + x] = (cur[width * y + x] + 1) % n;
+                } else {
+                    next[width * y + x] = cur[width * y + x];
+                }
+            }
+        }
+
+        for (int x : new int[]{0, width - 1}) {
+            for (int y = 0; y < height; ++y) {
                 boolean succeeded = false;
 
                 for (int i = 0; i < dx.length; ++i) {

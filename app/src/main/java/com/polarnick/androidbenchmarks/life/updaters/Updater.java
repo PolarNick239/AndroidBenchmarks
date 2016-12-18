@@ -15,8 +15,8 @@ public abstract class Updater {
     protected int width = 0;
     protected int height = 0;
 
-    static final int nthreads = 5 * Runtime.getRuntime().availableProcessors();
-    static final ExecutorService executors = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors() + 1);
+    static final int nthreads = Runtime.getRuntime().availableProcessors() + 1;
+    static final ExecutorService executors = Executors.newFixedThreadPool(nthreads);
 
     public abstract String getName();
 
@@ -29,6 +29,8 @@ public abstract class Updater {
         this.height = height;
         this.n = n;
     }
+
+    public abstract void setState(int[] state);
 
     public int getHeight() {
         return height;

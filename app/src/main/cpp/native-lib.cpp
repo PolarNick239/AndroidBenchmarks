@@ -67,7 +67,27 @@ Java_com_polarnick_androidbenchmarks_life_updaters_NativeUpdater_updatePart(
 
     // Corner cases
     for (int y = 0; y <= height - 1; y += height - 1) {
-        for (int x = 0; x <= width - 1; x += width - 1) {
+        for (int x = 0; x < width; ++x) {
+            bool succeeded = false;
+
+            for (int i = 0; i < 8; ++i) {
+                if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
+                    continue;
+                }
+                if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
+                    succeeded = true;
+                }
+            }
+
+            if (succeeded) {
+                next[width * y + x] = (cur[width * y + x] + 1) % n;
+            } else {
+                next[width * y + x] = cur[width * y + x];
+            }
+        }
+    }
+    for (int x = 0; x <= width - 1; x += width - 1) {
+        for (int y = 0; y < height; ++y) {
             bool succeeded = false;
 
             for (int i = 0; i < 8; ++i) {
@@ -138,7 +158,27 @@ Java_com_polarnick_androidbenchmarks_life_updaters_TunedNativeUpdater_updatePart
 
     // Corner cases
     for (int y = 0; y <= height - 1; y += height - 1) {
-        for (int x = 0; x <= width - 1; x += width - 1) {
+        for (int x = 0; x < width; ++x) {
+            bool succeeded = false;
+
+            for (int i = 0; i < 8; ++i) {
+                if (x + dx[i] < 0 || x + dx[i] >= width || y + dy[i] < 0 || y + dy[i] >= height) {
+                    continue;
+                }
+                if (cur[width * (y + dy[i]) + x + dx[i]] == (cur[width * y + x] + 1) % n) {
+                    succeeded = true;
+                }
+            }
+
+            if (succeeded) {
+                next[width * y + x] = (cur[width * y + x] + 1) % n;
+            } else {
+                next[width * y + x] = cur[width * y + x];
+            }
+        }
+    }
+    for (int x = 0; x <= width - 1; x += width - 1) {
+        for (int y = 0; y < height; ++y) {
             bool succeeded = false;
 
             for (int i = 0; i < 8; ++i) {
